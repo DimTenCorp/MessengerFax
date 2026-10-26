@@ -6,8 +6,8 @@ enum Screen { CHATS, GALLERY, CHAT_VIEW }
 
 signal screen_changed(new_screen: int, payload)
 
-var current_screen: int = Screen.CHAT_VIEW
-var current_chat_id: String = "chat_01"
+var current_screen: int = Screen.CHATS
+var current_chat_id: String = ""
 
 # Для Яндекс.Игр - заглушка под SDK
 var is_yandex_env: bool = false

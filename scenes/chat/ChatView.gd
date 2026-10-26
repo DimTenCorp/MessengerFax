@@ -17,7 +17,7 @@ func _ready() -> void:
 	_style_header()
 	_style_input()
 	_style_avatar()
-	back_btn.hide()
+	back_btn.pressed.connect(_on_back)
 	send_btn.pressed.connect(_on_send_pressed)
 	if chat_id == "":
 		var gm = get_node_or_null("/root/GameManager")
