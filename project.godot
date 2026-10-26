@@ -13,15 +13,46 @@ config_version=5
 config/name="MessengerFax"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
+run/main_scene="res://scenes/Main.tscn"
+boot_splash/bg_color=Color(0.0862745, 0.0862745, 0.113725, 1)
+
+[autoload]
+
+GameManager="*res://scripts/autoload/GameManager.gd"
+GalleryManager="*res://scripts/autoload/GalleryManager.gd"
+ChatData="*res://scripts/autoload/ChatData.gd"
 
 [display]
 
+window/name="Messenger Fax"
+window/size/viewport_width=432
+window/size/viewport_height=960
+window/size/resizable=true
 window/stretch/mode="canvas_items"
-window/stretch/aspect="expand"
+window/stretch/aspect="keep_width"
+window/stretch/scale=1.0
+window/stretch/scale_mode="fractional"
+window/handheld/orientation=1
+window/vsync/vsync_mode=1
 
-[editor_plugins]
+[input]
 
-enabled=PackedStringArray("res://addons/godot_git/plugin.cfg")
+ui_accept={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"command_or_control_autowindow":false,"control_pressed":false,"meta_pressed":false,"pressed":false,"keycode":4194309,"physical_keycode":0,"key_label":0,"unicode":0,"echo":false,"script":null)
+, Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"command_or_control_autowindow":false,"control_pressed":false,"meta_pressed":false,"pressed":false,"keycode":4194310,"physical_keycode":0,"key_label":0,"unicode":0,"echo":false,"script":null)
+, Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"command_or_control_autowindow":false,"control_pressed":false,"meta_pressed":false,"pressed":false,"keycode":32,"physical_keycode":0,"key_label":0,"unicode":32,"echo":false,"script":null)
+]
+}
+ui_back={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"command_or_control_autowindow":false,"control_pressed":false,"meta_pressed":false,"pressed":false,"keycode":4194308,"physical_keycode":0,"key_label":0,"unicode":0,"echo":false,"script":null)
+]
+}
+
+[input_devices]
+
+pointing/emulate_touch_from_mouse=true
 
 [physics]
 
@@ -32,3 +63,10 @@ enabled=PackedStringArray("res://addons/godot_git/plugin.cfg")
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0.0862745, 0.0862745, 0.113725, 1)
+textures/canvas_textures/default_texture_filter=2
+textures/canvas_textures/default_texture_repeat=0
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/godot_git/plugin.cfg")

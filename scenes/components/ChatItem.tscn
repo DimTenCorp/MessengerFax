@@ -1,0 +1,208 @@
+[gd_scene load_steps=4 format=3 uid="uid://c1x8a2b7h1h8o"]
+
+[ext_resource type="Script" path="res://scenes/components/ChatItem.gd" id="1"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_chat"]
+bg_color=Color(0.129412, 0.129412, 0.14902, 1)
+corner_radius_top_left=16
+corner_radius_top_right=16
+corner_radius_bottom_right=16
+corner_radius_bottom_left=16
+content_margin_left=0.0
+content_margin_top=0.0
+content_margin_right=0.0
+content_margin_bottom=0.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_avatar"]
+bg_color=Color(0.482353, 0.380392, 1, 1)
+corner_radius_top_left=26
+corner_radius_top_right=26
+corner_radius_bottom_right=26
+corner_radius_bottom_left=26
+
+[node name="ChatItem" type="PanelContainer"]
+custom_minimum_size=Vector2(0, 76)
+size_flags_horizontal=3
+mouse_default_cursor_shape=2
+mouse_filter=0
+script=ExtResource("1")
+stylebox_override/panel=SubResource("StyleBoxFlat_chat")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode=2
+mouse_filter=2
+anchors_preset=15
+anchor_right=1.0
+anchor_bottom=1.0
+grow_horizontal=2
+grow_vertical=2
+size_flags_horizontal=3
+size_flags_vertical=4
+theme_override_constants/margin_left=12
+theme_override_constants/margin_top=10
+theme_override_constants/margin_right=12
+theme_override_constants/margin_bottom=10
+
+[node name="HBox" type="HBoxContainer" parent="Margin"]
+layout_mode=2
+mouse_filter=2
+alignment=1
+
+[node name="AvatarWrap" type="Control" parent="Margin/HBox"]
+custom_minimum_size=Vector2(52, 52)
+layout_mode=2
+size_flags_horizontal=0
+size_flags_vertical=4
+mouse_filter=2
+
+[node name="AvatarBg" type="Panel" parent="Margin/HBox/AvatarWrap"]
+layout_mode=1
+anchors_preset=15
+anchor_right=1.0
+anchor_bottom=1.0
+grow_horizontal=2
+grow_vertical=2
+mouse_filter=2
+size_flags_horizontal=3
+size_flags_vertical=4
+
+[node name="AvatarTexture" type="TextureRect" parent="Margin/HBox/AvatarWrap/AvatarBg"]
+visible=false
+layout_mode=1
+anchors_preset=15
+anchor_right=1.0
+anchor_bottom=1.0
+grow_horizontal=2
+grow_vertical=2
+mouse_filter=2
+expand_mode=1
+stretch_mode=5
+
+[node name="AvatarLabel" type="Label" parent="Margin/HBox/AvatarWrap/AvatarBg"]
+layout_mode=1
+anchors_preset=15
+anchor_right=1.0
+anchor_bottom=1.0
+grow_horizontal=2
+grow_vertical=2
+mouse_filter=2
+horizontal_alignment=1
+vertical_alignment=1
+theme_override_colors/font_color=Color(1, 1, 1, 1)
+theme_override_fonts/font_size=22
+theme_override_constants/outline_size=0
+text="А"
+horizontal_alignment=1
+vertical_alignment=1
+
+[node name="OnlineDot" type="Panel" parent="Margin/HBox/AvatarWrap"]
+visible=false
+custom_minimum_size=Vector2(14, 14)
+layout_mode=1
+anchors_preset=3
+anchor_left=1.0
+anchor_top=1.0
+anchor_right=1.0
+anchor_bottom=1.0
+offset_left=-16.0
+offset_top=-16.0
+offset_right=-2.0
+offset_bottom=-2.0
+grow_horizontal=0
+grow_vertical=0
+mouse_filter=2
+
+[node name="Center" type="VBoxContainer" parent="Margin/HBox"]
+custom_minimum_size=Vector2(0, 0)
+layout_mode=2
+size_flags_horizontal=3
+size_flags_vertical=4
+mouse_filter=2
+alignment=1
+
+[node name="TopRow" type="HBoxContainer" parent="Margin/HBox/Center"]
+layout_mode=2
+mouse_filter=2
+alignment=0
+
+[node name="NameLabel" type="Label" parent="Margin/HBox/Center/TopRow"]
+custom_minimum_size=Vector2(0, 0)
+layout_mode=2
+size_flags_horizontal=3
+mouse_filter=2
+theme_override_colors/font_color=Color(0.941176, 0.941176, 0.960784, 1)
+theme_override_fonts/font_size=16
+text="Аня"
+horizontal_alignment=0
+
+[node name="TimeLabel" type="Label" parent="Margin/HBox/Center/TopRow"]
+layout_mode=2
+size_flags_horizontal=0
+size_flags_vertical=4
+mouse_filter=2
+theme_override_colors/font_color=Color(0.54902, 0.54902, 0.607843, 1)
+theme_override_fonts/font_size=12
+text="14:32"
+horizontal_alignment=2
+
+[node name="BottomRow" type="HBoxContainer" parent="Margin/HBox/Center"]
+layout_mode=2
+mouse_filter=2
+alignment=1
+
+[node name="MessageLabel" type="Label" parent="Margin/HBox/Center/BottomRow"]
+custom_minimum_size=Vector2(0, 0)
+layout_mode=2
+size_flags_horizontal=3
+mouse_filter=2
+theme_override_colors/font_color=Color(0.67451, 0.67451, 0.729412, 1)
+theme_override_fonts/font_size=13
+text="Привет! Ты тут? Давно не виделись..."
+clip_text=true
+text_overrun_behavior=3
+horizontal_alignment=0
+
+[node name="Badge" type="Panel" parent="Margin/HBox/Center/BottomRow"]
+visible=false
+custom_minimum_size=Vector2(22, 22)
+layout_mode=2
+size_flags_horizontal=0
+size_flags_vertical=4
+mouse_filter=2
+
+[node name="BadgeLabel" type="Label" parent="Margin/HBox/Center/BottomRow/Badge"]
+layout_mode=1
+anchors_preset=15
+anchor_right=1.0
+anchor_bottom=1.0
+grow_horizontal=2
+grow_vertical=2
+mouse_filter=2
+horizontal_alignment=1
+vertical_alignment=1
+theme_override_colors/font_color=Color(1, 1, 1, 1)
+theme_override_fonts/font_size=11
+text="2"
+horizontal_alignment=1
+vertical_alignment=1
+
+[node name="TypingLabel" type="Label" parent="Margin/HBox/Center/BottomRow"]
+visible=false
+layout_mode=2
+size_flags_horizontal=0
+size_flags_vertical=4
+mouse_filter=2
+theme_override_colors/font_color=Color(0.482353, 0.380392, 1, 1)
+theme_override_fonts/font_size=13
+text="печатает..."
+
+[node name="Chevron" type="Label" parent="Margin/HBox"]
+layout_mode=2
+size_flags_horizontal=0
+size_flags_vertical=4
+mouse_filter=2
+theme_override_colors/font_color=Color(0.34902, 0.34902, 0.419608, 1)
+theme_override_fonts/font_size=16
+text="›"
+horizontal_alignment=1
+vertical_alignment=1

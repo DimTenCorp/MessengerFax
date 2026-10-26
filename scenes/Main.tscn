@@ -1,0 +1,105 @@
+[gd_scene load_steps=5 format=3 uid="uid://mn8p2q4r6s7t9"]
+[ext_resource type="PackedScene" uid="uid://dx7k9l2m4n5p6" path="res://scenes/main_menu/ChatList.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://qy4p6r8s2t1u3" path="res://scenes/gallery/Gallery.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://zv5w7x9y1a2b4" path="res://scenes/chat/ChatView.tscn" id="3"]
+[ext_resource type="Script" path="res://scenes/Main.gd" id="4"]
+
+[node name="Main" type="Control"]
+layout_mode=3
+anchors_preset=15
+anchor_right=1.0
+anchor_bottom=1.0
+grow_horizontal=2
+grow_vertical=2
+size_flags_horizontal=3
+size_flags_vertical=3
+script=ExtResource("4")
+metadata/_edit_use_anchors=true
+
+[node name="Bg" type="ColorRect" parent="."]
+layout_mode=1
+anchors_preset=15
+anchor_right=1.0
+anchor_bottom=1.0
+grow_horizontal=2
+grow_vertical=2
+color=Color(0.0862745, 0.0862745, 0.113725, 1)
+
+[node name="SafeArea" type="MarginContainer" parent="."]
+layout_mode=1
+anchors_preset=15
+anchor_right=1.0
+anchor_bottom=1.0
+grow_horizontal=2
+grow_vertical=2
+theme_override_constants/margin_left=0
+theme_override_constants/margin_top=0
+theme_override_constants/margin_right=0
+theme_override_constants/margin_bottom=0
+
+[node name="RootVBox" type="VBoxContainer" parent="SafeArea"]
+layout_mode=2
+size_flags_horizontal=3
+size_flags_vertical=3
+alignment=0
+
+[node name="Content" type="Control" parent="SafeArea/RootVBox"]
+layout_mode=2
+size_flags_horizontal=3
+size_flags_vertical=3
+
+[node name="ChatList" parent="SafeArea/RootVBox/Content" instance=ExtResource("1")]
+layout_mode=1
+anchors_preset=15
+anchor_right=1.0
+anchor_bottom=1.0
+grow_horizontal=2
+grow_vertical=2
+
+[node name="Gallery" parent="SafeArea/RootVBox/Content" instance=ExtResource("2")]
+visible=false
+layout_mode=1
+anchors_preset=15
+anchor_right=1.0
+anchor_bottom=1.0
+grow_horizontal=2
+grow_vertical=2
+
+[node name="ChatView" parent="SafeArea/RootVBox/Content" instance=ExtResource("3")]
+visible=false
+layout_mode=1
+anchors_preset=15
+anchor_right=1.0
+anchor_bottom=1.0
+grow_horizontal=2
+grow_vertical=2
+
+[node name="BottomNav" type="Panel" parent="SafeArea/RootVBox"]
+custom_minimum_size=Vector2(0, 64)
+layout_mode=2
+size_flags_horizontal=3
+size_flags_vertical=0
+
+[node name="NavHBox" type="HBoxContainer" parent="SafeArea/RootVBox/BottomNav"]
+layout_mode=1
+anchors_preset=15
+anchor_right=1.0
+anchor_bottom=1.0
+grow_horizontal=2
+grow_vertical=2
+alignment=1
+theme_override_constants/separation=12
+
+[node name="ChatsBtn" type="Button" parent="SafeArea/RootVBox/BottomNav/NavHBox"]
+custom_minimum_size=Vector2(0, 48)
+layout_mode=2
+size_flags_horizontal=3
+size_flags_vertical=4
+text="💬 Чаты"
+
+[node name="GalleryBtn" type="Button" parent="SafeArea/RootVBox/BottomNav/NavHBox"]
+custom_minimum_size=Vector2(0, 48)
+layout_mode=2
+size_flags_horizontal=3
+size_flags_vertical=4
+text="🖼️ Галерея • 0/5"

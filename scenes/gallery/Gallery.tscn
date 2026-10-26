@@ -1,0 +1,109 @@
+[gd_scene load_steps=3 format=3 uid="uid://qy4p6r8s2t1u3"]
+[ext_resource type="Script" path="res://scenes/gallery/Gallery.gd" id="1"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_header"]
+bg_color=Color(0.117647, 0.117647, 0.137255, 1)
+corner_radius_top_left=0
+corner_radius_top_right=0
+corner_radius_bottom_right=16
+corner_radius_bottom_left=16
+
+[node name="Gallery" type="Control"]
+layout_mode=3
+anchors_preset=15
+anchor_right=1.0
+anchor_bottom=1.0
+grow_horizontal=2
+grow_vertical=2
+script=ExtResource("1")
+
+[node name="Bg" type="ColorRect" parent="."]
+layout_mode=1
+anchors_preset=15
+anchor_right=1.0
+anchor_bottom=1.0
+grow_horizontal=2
+grow_vertical=2
+color=Color(0.0862745, 0.0862745, 0.113725, 1)
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode=1
+anchors_preset=15
+anchor_right=1.0
+anchor_bottom=1.0
+grow_horizontal=2
+grow_vertical=2
+
+[node name="Header" type="Panel" parent="VBox"]
+custom_minimum_size=Vector2(0, 86)
+layout_mode=2
+size_flags_horizontal=3
+stylebox_override/panel=SubResource("StyleBoxFlat_header")
+
+[node name="Margin" type="MarginContainer" parent="VBox/Header"]
+layout_mode=1
+anchors_preset=15
+anchor_right=1.0
+anchor_bottom=1.0
+grow_horizontal=2
+grow_vertical=2
+theme_override_constants/margin_left=16
+theme_override_constants/margin_top=14
+theme_override_constants/margin_right=16
+theme_override_constants/margin_bottom=14
+
+[node name="VBox2" type="VBoxContainer" parent="VBox/Header/Margin"]
+layout_mode=2
+
+[node name="Title" type="Label" parent="VBox/Header/Margin/VBox2"]
+layout_mode=2
+theme_override_colors/font_color=Color(0.941176, 0.941176, 0.960784, 1)
+theme_override_fonts/font_size=26
+text="Галерея"
+
+[node name="Subtitle" type="Label" parent="VBox/Header/Margin/VBox2"]
+layout_mode=2
+theme_override_colors/font_color=Color(0.54902, 0.54902, 0.607843, 1)
+theme_override_fonts/font_size=13
+text="0 / 5 фото получено"
+
+[node name="Hint" type="Label" parent="VBox"]
+custom_minimum_size=Vector2(0, 24)
+layout_mode=2
+theme_override_colors/font_color=Color(0.415686, 0.415686, 0.498039, 1)
+theme_override_fonts/font_size=12
+text="Общайся с персонажами, чтобы получить их фото ✨"
+horizontal_alignment=1
+
+[node name="Scroll" type="ScrollContainer" parent="VBox"]
+layout_mode=2
+size_flags_horizontal=3
+size_flags_vertical=3
+horizontal_scroll_mode=0
+
+[node name="Grid" type="GridContainer" parent="VBox/Scroll"]
+layout_mode=2
+size_flags_horizontal=3
+size_flags_vertical=3
+columns=2
+theme_override_constants/h_separation=12
+theme_override_constants/v_separation=12
+
+[node name="EmptyState" type="Panel" parent="VBox/Scroll/Grid"]
+visible=false
+custom_minimum_size=Vector2(0, 200)
+layout_mode=2
+size_flags_horizontal=3
+
+[node name="CenterContainer" type="CenterContainer" parent="VBox"]
+layout_mode=2
+size_flags_horizontal=3
+size_flags_vertical=3
+visible=false
+
+[node name="EmptyLabel" type="Label" parent="VBox/CenterContainer"]
+layout_mode=2
+theme_override_colors/font_color=Color(0.54902, 0.54902, 0.607843, 1)
+theme_override_fonts/font_size=14
+text="Нет фото"
+horizontal_alignment=1
