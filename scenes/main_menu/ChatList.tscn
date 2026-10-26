@@ -1,0 +1,203 @@
+[gd_scene load_steps=3 format=3 uid="uid://dx7k9l2m4n5p6"]
+[ext_resource type="Script" path="res://scenes/main_menu/ChatList.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://bq8k2d9f3p1h7" path="res://scenes/components/ChatItem.tscn" id="2"]
+
+[node name="ChatList" type="Control"]
+layout_mode=3
+anchors_preset=15
+anchor_right=1.0
+anchor_bottom=1.0
+grow_horizontal=2
+grow_vertical=2
+size_flags_horizontal=3
+size_flags_vertical=3
+script=ExtResource("1")
+metadata/_edit_use_anchors=true
+
+[node name="Bg" type="ColorRect" parent="."]
+layout_mode=1
+anchors_preset=15
+anchor_right=1.0
+anchor_bottom=1.0
+grow_horizontal=2
+grow_vertical=2
+color=Color(0.0862745, 0.0862745, 0.113725, 1)
+
+[node name="MainVBox" type="VBoxContainer" parent="."]
+layout_mode=1
+anchors_preset=15
+anchor_right=1.0
+anchor_bottom=1.0
+grow_horizontal=2
+grow_vertical=2
+alignment=0
+
+[node name="Header" type="Panel" parent="MainVBox"]
+custom_minimum_size=Vector2(0, 112)
+layout_mode=2
+size_flags_horizontal=3
+size_flags_vertical=0
+
+[node name="HeaderBg" type="ColorRect" parent="MainVBox/Header"]
+layout_mode=1
+anchors_preset=15
+anchor_right=1.0
+anchor_bottom=1.0
+grow_horizontal=2
+grow_vertical=2
+color=Color(0.129412, 0.129412, 0.14902, 1)
+
+[node name="HeaderMargin" type="MarginContainer" parent="MainVBox/Header"]
+layout_mode=1
+anchors_preset=15
+anchor_right=1.0
+anchor_bottom=1.0
+grow_horizontal=2
+grow_vertical=2
+theme_override_constants/margin_left=16
+theme_override_constants/margin_top=14
+theme_override_constants/margin_right=16
+theme_override_constants/margin_bottom=12
+
+[node name="VBox" type="VBoxContainer" parent="MainVBox/Header/HeaderMargin"]
+layout_mode=2
+alignment=0
+
+[node name="TopRow" type="HBoxContainer" parent="MainVBox/Header/HeaderMargin/VBox"]
+layout_mode=2
+alignment=0
+
+[node name="Title" type="Label" parent="MainVBox/Header/HeaderMargin/VBox/TopRow"]
+custom_minimum_size=Vector2(0, 28)
+layout_mode=2
+size_flags_horizontal=3
+theme_override_colors/font_color=Color(0.941176, 0.941176, 0.960784, 1)
+theme_override_fonts/font_size=26
+text="Чаты"
+vertical_alignment=1
+
+[node name="EditBtn" type="Button" parent="MainVBox/Header/HeaderMargin/VBox/TopRow"]
+custom_minimum_size=Vector2(36, 36)
+layout_mode=2
+size_flags_horizontal=0
+size_flags_vertical=4
+flat=true
+icon_alignment=1
+text="⋯"
+
+[node name="Subtitle" type="HBoxContainer" parent="MainVBox/Header/HeaderMargin/VBox"]
+layout_mode=2
+alignment=0
+
+[node name="OnlineLabel" type="Label" parent="MainVBox/Header/HeaderMargin/VBox/Subtitle"]
+layout_mode=2
+size_flags_horizontal=0
+theme_override_colors/font_color=Color(0.54902, 0.54902, 0.607843, 1)
+theme_override_fonts/font_size=13
+text="5 чатов • 2 онлайн"
+
+[node name="Spacer" type="Control" parent="MainVBox/Header/HeaderMargin/VBox/Subtitle"]
+custom_minimum_size=Vector2(0, 0)
+layout_mode=2
+size_flags_horizontal=3
+
+[node name="UnreadBadge" type="Panel" parent="MainVBox/Header/HeaderMargin/VBox/Subtitle"]
+custom_minimum_size=Vector2(28, 20)
+layout_mode=2
+size_flags_horizontal=0
+size_flags_vertical=4
+
+[node name="UnreadLabel" type="Label" parent="MainVBox/Header/HeaderMargin/VBox/Subtitle/UnreadBadge"]
+layout_mode=1
+anchors_preset=15
+anchor_right=1.0
+anchor_bottom=1.0
+grow_horizontal=2
+grow_vertical=2
+horizontal_alignment=1
+vertical_alignment=1
+theme_override_colors/font_color=Color(1, 1, 1, 1)
+theme_override_fonts/font_size=11
+text="6"
+
+[node name="SearchBar" type="Panel" parent="MainVBox/Header/HeaderMargin/VBox"]
+custom_minimum_size=Vector2(0, 36)
+layout_mode=2
+size_flags_horizontal=3
+
+[node name="SearchMargin" type="MarginContainer" parent="MainVBox/Header/HeaderMargin/VBox/SearchBar"]
+layout_mode=1
+anchors_preset=15
+anchor_right=1.0
+anchor_bottom=1.0
+grow_horizontal=2
+grow_vertical=2
+theme_override_constants/margin_left=12
+theme_override_constants/margin_top=6
+theme_override_constants/margin_right=12
+theme_override_constants/margin_bottom=6
+
+[node name="HBox" type="HBoxContainer" parent="MainVBox/Header/HeaderMargin/VBox/SearchBar/SearchMargin"]
+layout_mode=2
+alignment=1
+
+[node name="SearchIcon" type="Label" parent="MainVBox/Header/HeaderMargin/VBox/SearchBar/SearchMargin/HBox"]
+layout_mode=2
+size_flags_vertical=4
+theme_override_colors/font_color=Color(0.54902, 0.54902, 0.607843, 1)
+theme_override_fonts/font_size=14
+text="⌕"
+
+[node name="SearchInput" type="LineEdit" parent="MainVBox/Header/HeaderMargin/VBox/SearchBar/SearchMargin/HBox"]
+custom_minimum_size=Vector2(0, 0)
+layout_mode=2
+size_flags_horizontal=3
+placeholder_text="Поиск"
+flat=true
+theme_override_colors/font_color=Color(0.54902, 0.54902, 0.607843, 1)
+theme_override_fonts/font_size=14
+
+[node name="Divider" type="ColorRect" parent="MainVBox"]
+custom_minimum_size=Vector2(0, 1)
+layout_mode=2
+size_flags_horizontal=3
+color=Color(0.176471, 0.176471, 0.207843, 1)
+
+[node name="Scroll" type="ScrollContainer" parent="MainVBox"]
+layout_mode=2
+size_flags_horizontal=3
+size_flags_vertical=3
+horizontal_scroll_mode=0
+
+[node name="ChatsVBox" type="VBoxContainer" parent="MainVBox/Scroll"]
+custom_minimum_size=Vector2(0, 0)
+layout_mode=2
+size_flags_horizontal=3
+size_flags_vertical=3
+theme_override_constants/separation=8
+alignment=0
+
+[node name="Hint" type="Panel" parent="MainVBox"]
+custom_minimum_size=Vector2(0, 44)
+layout_mode=2
+size_flags_horizontal=3
+
+[node name="HintMargin" type="MarginContainer" parent="MainVBox/Hint"]
+layout_mode=1
+anchors_preset=15
+anchor_right=1.0
+anchor_bottom=1.0
+grow_horizontal=2
+grow_vertical=2
+theme_override_constants/margin_left=16
+theme_override_constants/margin_top=8
+theme_override_constants/margin_right=16
+theme_override_constants/margin_bottom=8
+
+[node name="HintLabel" type="Label" parent="MainVBox/Hint/HintMargin"]
+layout_mode=2
+horizontal_alignment=1
+theme_override_colors/font_color=Color(0.415686, 0.415686, 0.498039, 1)
+theme_override_fonts/font_size=12
+text="Нажми на чат, чтобы начать общение 💬"
+horizontal_alignment=1

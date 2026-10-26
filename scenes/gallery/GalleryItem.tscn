@@ -1,0 +1,95 @@
+[gd_scene load_steps=2 format=3 uid="uid://gh3j8k1l9m2n4"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_locked"]
+bg_color=Color(0.129412, 0.129412, 0.14902, 1)
+corner_radius_top_left=16
+corner_radius_top_right=16
+corner_radius_bottom_right=16
+corner_radius_bottom_left=16
+border_width_left=1
+border_width_top=1
+border_width_right=1
+border_width_bottom=1
+border_color=Color(0.176471, 0.176471, 0.207843, 0.580392)
+
+[node name="GalleryItem" type="PanelContainer"]
+custom_minimum_size=Vector2(0, 170)
+size_flags_horizontal=3
+size_flags_vertical=0
+stylebox_override/panel=SubResource("StyleBoxFlat_locked")
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode=2
+alignment=1
+
+[node name="ImageWrap" type="Control" parent="VBox"]
+custom_minimum_size=Vector2(0, 120)
+layout_mode=2
+size_flags_horizontal=3
+size_flags_vertical=3
+mouse_filter=2
+
+[node name="ImageBg" type="ColorRect" parent="VBox/ImageWrap"]
+layout_mode=1
+anchors_preset=15
+anchor_right=1.0
+anchor_bottom=1.0
+grow_horizontal=2
+grow_vertical=2
+color=Color(0.160784, 0.160784, 0.188235, 1)
+
+[node name="PlaceholderIcon" type="Label" parent="VBox/ImageWrap/ImageBg"]
+layout_mode=1
+anchors_preset=15
+anchor_right=1.0
+anchor_bottom=1.0
+grow_horizontal=2
+grow_vertical=2
+horizontal_alignment=1
+vertical_alignment=1
+theme_override_colors/font_color=Color(0.54902, 0.54902, 0.607843, 1)
+theme_override_fonts/font_size=28
+text="🔒"
+
+[node name="UnlockedLabel" type="Label" parent="VBox/ImageWrap/ImageBg"]
+visible=false
+layout_mode=1
+anchors_preset=15
+anchor_right=1.0
+anchor_bottom=1.0
+grow_horizontal=2
+grow_vertical=2
+horizontal_alignment=1
+vertical_alignment=1
+theme_override_colors/font_color=Color(1, 1, 1, 1)
+theme_override_fonts/font_size=22
+text="🖼️"
+
+[node name="TextureRect" type="TextureRect" parent="VBox/ImageWrap"]
+visible=false
+layout_mode=1
+anchors_preset=15
+anchor_right=1.0
+anchor_bottom=1.0
+grow_horizontal=2
+grow_vertical=2
+expand_mode=1
+stretch_mode=5
+
+[node name="NameLabel" type="Label" parent="VBox"]
+layout_mode=2
+size_flags_horizontal=3
+horizontal_alignment=1
+theme_override_colors/font_color=Color(0.941176, 0.941176, 0.960784, 1)
+theme_override_fonts/font_size=13
+text="Аня"
+horizontal_alignment=1
+
+[node name="StatusLabel" type="Label" parent="VBox"]
+layout_mode=2
+size_flags_horizontal=3
+horizontal_alignment=1
+theme_override_colors/font_color=Color(0.54902, 0.54902, 0.607843, 1)
+theme_override_fonts/font_size=11
+text="заблокировано"
+horizontal_alignment=1
