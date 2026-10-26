@@ -110,7 +110,7 @@ func _create_item(char_id: String, data: Dictionary) -> Control:
 		bg.add_child(icon)
 
 	var name_lbl := Label.new()
-	name_lbl.text = data.get("character_name", char_id)
+	name_lbl.text = data.get("display_name", data.get("character_name", char_id))
 	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	name_lbl.add_theme_font_size_override("font_size", 13)
 	name_lbl.add_theme_color_override("font_color", Color("#ECECF1") if is_unlocked else Color("#A8A8B5"))

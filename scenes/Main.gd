@@ -109,7 +109,9 @@ func _ready() -> void:
 
 		chats_btn.pressed.connect(func():
 			var gm2 = get_node_or_null("/root/GameManager")
-			if gm2: gm2.go_to(0)
+			if gm2: gm2.go_to(2, "chat_01")
+			var cd2 = get_node_or_null("/root/ChatData")
+			if cd2: cd2.mark_as_read("chat_01")
 		)
 		gallery_btn.pressed.connect(func():
 			var gm2 = get_node_or_null("/root/GameManager")
@@ -117,7 +119,7 @@ func _ready() -> void:
 		)
 
 		_update_gallery_button()
-		_apply_screen(0)
+		_apply_screen(2, "chat_01")
 
 		if OS.has_feature("web"):
 			_setup_web_back()
@@ -214,7 +216,7 @@ func _update_nav_visuals() -> void:
 	inactive_sb.content_margin_right = 12
 	inactive_sb.content_margin_bottom = 8
 
-	if _active_screen == 0: # CHATS
+	if _active_screen == 0 or _active_screen == 2: # CHAT
 		chats_btn.add_theme_stylebox_override("normal", active_sb)
 		chats_btn.add_theme_stylebox_override("hover", active_sb)
 		chats_btn.add_theme_stylebox_override("pressed", active_sb)
@@ -384,12 +386,10 @@ func _update_gallery_button() -> void:
 	if is_instance_valid(gallery_btn):
 		gallery_btn.text = "🖼️ Галерея • %d/%d" % [unlocked, total]
 	if is_instance_valid(chats_btn):
-		if unread > 0 and _active_screen != 0:
-			chats_btn.text = "💬 Чаты • %d" % unread
+		if unread > 0 and _active_screen != 2:
+			chats_btn.text = "💬 Чат • %d" % unread
 		else:
-			chats_btn.text = "💬 Чаты"
-			if unread > 0 and _active_screen != 0:
-				chats_btn.add_theme_color_override("font_color", Color("#FF6B8A"))
+			chats_btn.text = "💬 Чат"
 
 func _on_screen_changed(new_screen: int, payload: Variant) -> void:
 	_apply_screen(new_screen, payload)
@@ -409,7 +409,6 @@ func _apply_screen(screen: int, payload: Variant = null) -> void:
 		2: # CHAT_VIEW
 			if is_instance_valid(chat_view):
 				chat_view.visible = true
-			if is_instance_valid(bottom_nav): bottom_nav.visible = false
 			if payload is String and is_instance_valid(chat_view):
 				chat_view.call_deferred("setup", payload)
 			if is_instance_valid(chat_view):
@@ -429,9 +428,12 @@ func _apply_screen(screen: int, payload: Variant = null) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_back") or (event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE):
-		if _active_screen == 2:
+		if _active_screen == 1:
 			var gm = get_node_or_null("/root/GameManager")
-			if gm: gm.go_back_to_chats()
+			if gm: gm.go_to(2, "chat_01")
+			get_viewport().set_input_as_handled()
+		elif _active_screen == 2:
+			# Чат — главный экран, возврата к списку персонажей больше нет.
 			get_viewport().set_input_as_handled()
 
 func _setup_web_back() -> void:
