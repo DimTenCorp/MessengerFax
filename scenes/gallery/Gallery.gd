@@ -9,7 +9,6 @@ func _ready() -> void:
 	if gm:
 		gm.gallery_updated.connect(_refresh)
 	_refresh()
-	# Адаптив колонок
 	get_viewport().size_changed.connect(_update_columns)
 	_update_columns()
 
@@ -33,10 +32,8 @@ func _refresh() -> void:
 		var item := _create_item(char_id, data)
 		grid.add_child(item)
 
-	# отступы для грида
 	grid.add_theme_constant_override("h_separation", 12)
 	grid.add_theme_constant_override("v_separation", 12)
-	# паддинг через контейнер
 	var scroll := $VBox/Scroll
 	scroll.add_theme_constant_override("scrollbar_margin_left", 0)
 	_update_columns()
@@ -91,10 +88,10 @@ func _create_item(char_id: String, data: Dictionary) -> Control:
 	icon.add_theme_font_size_override("font_size", 32 if is_unlocked else 26)
 	if is_unlocked:
 		var tex_path: String = data.get("texture_path", "")
-		var gm = get_node_or_null("/root/GalleryManager")
+		var gm2 = get_node_or_null("/root/GalleryManager")
 		var tex: Texture2D = null
-		if gm:
-			tex = gm.try_load_texture(tex_path)
+		if gm2:
+			tex = gm2.try_load_texture(tex_path)
 		if tex:
 			var tr := TextureRect.new()
 			tr.texture = tex
@@ -133,7 +130,6 @@ func _create_item(char_id: String, data: Dictionary) -> Control:
 				_on_photo_clicked(char_id)
 		)
 
-	# лёгкая анимация появления
 	panel.modulate.a = 0.0
 	var tween := create_tween()
 	tween.tween_property(panel, "modulate:a", 1.0, 0.2)
@@ -144,12 +140,18 @@ func _update_columns() -> void:
 	var vp_w: float = get_viewport_rect().size.x
 	if DisplayServer.window_get_size().x > 0:
 		vp_w = float(DisplayServer.window_get_size().x)
-	# Определяем ширину телефона (совпадает с логикой Main)
 	var phone_w: float = vp_w
-	if vp_w >= 700:
-		phone_w = minf(vp_w * 0.95, 560)
+	if vp_w >= 800:
+		if vp_w >= 1200:
+			phone_w = minf(vp_w * 0.65, 980)
+		elif vp_w >= 900:
+			phone_w = minf(vp_w * 0.75, 980)
+		else:
+			phone_w = minf(vp_w * 0.85, 720)
 	if is_instance_valid(grid):
-		if phone_w >= 520:
+		if phone_w >= 860:
+			grid.columns = 4
+		elif phone_w >= 620:
 			grid.columns = 3
 		elif phone_w >= 360:
 			grid.columns = 2

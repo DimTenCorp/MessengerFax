@@ -12,12 +12,12 @@ extends Control
 @onready var bg_rect: ColorRect = $Bg
 @onready var bg_gradient: ColorRect = $BgGradient
 
-# Используем int для экрана чтобы не зависеть от порядка компиляции автозагрузок
 var _active_screen: int = 0 # 0=CHATS, 1=GALLERY, 2=CHAT_VIEW
 
-# Адаптив
-const MAX_PHONE_WIDTH: int = 560
-const TABLET_BREAKPOINT: int = 720
+# Адаптив - теперь ПК тянется шире
+const MAX_PHONE_WIDTH_DESKTOP: int = 980
+const MAX_PHONE_WIDTH_TABLET: int = 720
+const MAX_PHONE_HEIGHT: int = 960
 var _is_desktop_mode: bool = false
 
 func _ready() -> void:
@@ -26,7 +26,6 @@ func _ready() -> void:
 	_style_nav_buttons()
 	_style_phone_container()
 
-	# Подключаемся к автозагрузкам через глобальные имена (работает в рантайме)
 	var gm = get_node_or_null("/root/GameManager")
 	if gm:
 		gm.screen_changed.connect(_on_screen_changed)
@@ -49,41 +48,40 @@ func _ready() -> void:
 	_update_gallery_button()
 	_apply_screen(0)
 
-	# для веба - хэндлим кнопку назад браузера
 	if OS.has_feature("web"):
 		_setup_web_back()
 
-	# Адаптивная верстка
 	get_viewport().size_changed.connect(_update_layout)
 	_update_layout()
-	# Делаем так чтобы на старте лэйаут был корректным даже после небольшого дилэя (HTML лоадер)
 	await get_tree().create_timer(0.1).timeout
 	_update_layout()
 
 func _setup_font() -> void:
-	# Подгружаем шрифт динамически без .import (через FontFile.load_dynamic_font)
-	# Это убирает ошибку add_theme_font_override: p_font is null и даёт кириллицу на всех платформах
+	# Используем встроенный шрифт Godot по дефолту (он уже есть), 
+	# но пробуем подгрузить Inter для кириллицы. 
+	# Без проверки FileAccess - сразу пробуем load_dynamic_font, чтобы не триггерить p_font null
 	var font_path := "res://assets/fonts/Inter-Variable.ttf"
-	if not FileAccess.file_exists(font_path):
-		# Фолбэк: используем встроенный шрифт Godot
-		return
 	var font_file := FontFile.new()
 	var err := font_file.load_dynamic_font(font_path)
-	if err != OK or font_file == null:
-		return
-	# Создаём тему с этим шрифтом
 	var theme_override: Theme
-	if theme != null:
-		theme_override = theme.duplicate() as Theme
+	if err == OK and font_file != null:
+		# Успешно загрузили - применяем
+		if theme != null:
+			theme_override = theme.duplicate() as Theme
+		else:
+			theme_override = Theme.new()
+		theme_override.default_font = font_file
+		theme_override.default_font_size = 14
+		theme = theme_override
+		if get_tree() and get_tree().root:
+			# Не трогаем root.theme чтобы не переопределять встроенный и не вызывать p_font null на других узлах
+			pass
 	else:
-		theme_override = load("res://assets/fonts/ThemeWithFont.tres").duplicate() as Theme
-	theme_override.default_font = font_file
-	# Делаем шрифт чуть больше для телефона/десктопа адаптивно
-	theme_override.default_font_size = 14
-	theme = theme_override
-	# Применяем к руту чтобы наследовалось везде
-	if get_tree() and get_tree().root:
-		get_tree().root.theme = theme_override
+		# Не удалось - оставляем системный шрифт, главное не ставить theme с null font
+		# Убедимся что у нас нет кастом темы с нулевым фонтом
+		if theme != null and theme.default_font == null:
+			# Сбросим на пустую тему с дефолтным фолбеком
+			theme = null
 
 func _style_nav() -> void:
 	var sb := StyleBoxFlat.new()
@@ -97,7 +95,6 @@ func _style_nav() -> void:
 	bottom_nav.add_theme_stylebox_override("panel", sb)
 
 func _style_phone_container() -> void:
-	# Базовый стиль контейнера телефона
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = Color("#16161A")
 	sb.corner_radius_top_left = 0
@@ -165,20 +162,16 @@ func _update_nav_visuals() -> void:
 		gallery_btn.add_theme_color_override("font_color", Color("#A8A8B5"))
 
 func _update_layout() -> void:
-	# Определяем размер окна/вьюпорта
 	var vp_size: Vector2 = get_viewport_rect().size
-	# Для HTML может быть точнее DisplayServer
 	if DisplayServer.window_get_size() != Vector2i.ZERO:
-		# В редакторе window_get_size точнее, в вебе - viewport
 		var win_size := Vector2(DisplayServer.window_get_size())
-		# Берём максимум для стабильности
 		if win_size.x > 0 and win_size.y > 0:
 			vp_size = win_size
 
 	var win_w: float = vp_size.x
 	var win_h: float = vp_size.y
-	var is_desktop: bool = win_w >= 700 or (win_w > win_h and win_w >= 600)
-
+	# Десктоп определяем как широкий экран
+	var is_desktop: bool = win_w >= 800 or (win_w > win_h and win_w >= 650)
 	_is_desktop_mode = is_desktop
 
 	var phone_w: float = win_w
@@ -189,25 +182,30 @@ func _update_layout() -> void:
 	var shadow_enabled: bool = false
 
 	if is_desktop:
-		# Десктоп: центрируем телефоноподобное окно
-		phone_w = minf(win_w * 0.95, MAX_PHONE_WIDTH)
-		# Ограничиваем высоту чтобы был отступ сверху/снизу на больших экранах
-		if win_h > 800:
-			phone_h = minf(win_h * 0.92, 960)
+		# ПК: тянем широко - 75-85% ширины, но не больше лимита
+		if win_w >= 1200:
+			phone_w = minf(win_w * 0.65, MAX_PHONE_WIDTH_DESKTOP)
+		elif win_w >= 900:
+			phone_w = minf(win_w * 0.75, MAX_PHONE_WIDTH_DESKTOP)
+		else:
+			phone_w = minf(win_w * 0.85, MAX_PHONE_WIDTH_TABLET)
+		# Высота: на высоких экранах центрируем с отступом, на низких - полный экран
+		if win_h > 850:
+			phone_h = minf(win_h * 0.88, MAX_PHONE_HEIGHT)
 			top_margin = (win_h - phone_h) / 2.0
 			corner_radius = 20
 			shadow_enabled = true
 		else:
 			phone_h = win_h
-			corner_radius = 16 if win_w > 800 else 0
+			side_margin = (win_w - phone_w) / 2.0
+			corner_radius = 16 if win_w > 900 else 0
 			shadow_enabled = true
 		side_margin = (win_w - phone_w) / 2.0
-		# Фон для десктопа темнее с градиентом
-		bg_rect.color = Color("#0A0A0F")
+		bg_rect.color = Color("#08080E")
 		bg_gradient.visible = true
-		bg_gradient.color = Color(0.12, 0.08, 0.25, 0.18)
+		bg_gradient.color = Color(0.14, 0.10, 0.32, 0.22)
 	else:
-		# Мобилка: на весь экран без отступов
+		# Мобилка: фулскрин
 		phone_w = win_w
 		phone_h = win_h
 		side_margin = 0
@@ -217,12 +215,9 @@ func _update_layout() -> void:
 		bg_rect.color = Color("#16161A")
 		bg_gradient.visible = false
 
-	# Применяем позицию/размер к контейнеру телефона
-	# Используем offsets (так как anchor 0-1)
 	phone_container.position = Vector2(side_margin, top_margin)
 	phone_container.size = Vector2(phone_w, phone_h)
 
-	# Стиль контейнера с учётом режима
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = Color("#16161A")
 	sb.corner_radius_top_left = corner_radius
@@ -230,8 +225,8 @@ func _update_layout() -> void:
 	sb.corner_radius_bottom_right = corner_radius
 	sb.corner_radius_bottom_left = corner_radius
 	if shadow_enabled:
-		sb.shadow_color = Color(0, 0, 0, 0.5)
-		sb.shadow_size = 24
+		sb.shadow_color = Color(0, 0, 0, 0.55)
+		sb.shadow_size = 28
 		sb.border_color = Color("#2A2A33")
 		sb.border_width_left = 1
 		sb.border_width_top = 1
@@ -242,14 +237,14 @@ func _update_layout() -> void:
 		sb.shadow_size = 0
 	phone_container.add_theme_stylebox_override("panel", sb)
 
-	# Обновляем галерею колонки в зависимости от ширины
 	_update_gallery_columns(phone_w)
 
 func _update_gallery_columns(phone_width: float) -> void:
-	# Находим галерею и меняем колонки
 	var gal_grid: GridContainer = get_node_or_null("AdaptiveRoot/PhoneContainer/PhoneVBox/Content/Gallery/VBox/Scroll/Grid")
 	if gal_grid:
-		if phone_width >= 500:
+		if phone_width >= 860:
+			gal_grid.columns = 4
+		elif phone_width >= 620:
 			gal_grid.columns = 3
 		elif phone_width >= 360:
 			gal_grid.columns = 2
