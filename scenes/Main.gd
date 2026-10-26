@@ -386,7 +386,7 @@ func _update_gallery_button() -> void:
 func _on_screen_changed(new_screen: int, payload: Variant) -> void:
 	_apply_screen(new_screen, payload)
 
-func _apply_screen(screen: int, payload: Variant) -> void:
+func _apply_screen(screen: int, payload: Variant = null) -> void:
 	_active_screen = screen
 	if is_instance_valid(chat_list): chat_list.visible = false
 	if is_instance_valid(gallery): gallery.visible = false
