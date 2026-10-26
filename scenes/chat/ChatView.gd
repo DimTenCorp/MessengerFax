@@ -83,16 +83,20 @@ func _style_avatar() -> void:
 	avatar_panel.add_theme_stylebox_override("panel", sb)
 
 func _load_chat(id: String) -> void:
+	if not is_instance_valid(name_label) or not is_instance_valid(avatar_label) or not is_instance_valid(status_label):
+		# Ноды ещё не готовы (вызов из setup до _ready) — отложим
+		call_deferred("_load_chat", id)
+		return
 	var cd = get_node_or_null("/root/ChatData")
 	if cd == null:
 		return
 	var data: Dictionary = cd.get_chat_by_id(id)
 	if data.is_empty():
-		name_label.text = "Чат"
-		status_label.text = "не в сети"
+		if is_instance_valid(name_label): name_label.text = "Чат"
+		if is_instance_valid(status_label): status_label.text = "не в сети"
 		return
-	name_label.text = data.get("name", "???")
-	avatar_label.text = data.get("initials", "?")
+	if is_instance_valid(name_label): name_label.text = data.get("name", "???")
+	if is_instance_valid(avatar_label): avatar_label.text = data.get("initials", "?")
 	var col: Color = data.get("color", Color("#7B61FF"))
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = col

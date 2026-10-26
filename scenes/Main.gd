@@ -142,21 +142,25 @@ func _validate_property(property: Dictionary) -> void:
 			property.usage |= PROPERTY_USAGE_READ_ONLY
 
 func _setup_font() -> void:
+	# В редакторе не грузим шрифт чтобы не крашить Tool
+	if Engine.is_editor_hint():
+		return
 	var font_path := "res://assets/fonts/Inter-Variable.ttf"
+	# Проверяем через ResourceLoader а не FileAccess
+	if not ResourceLoader.exists(font_path) and not FileAccess.file_exists(font_path):
+		return
 	var font_file := FontFile.new()
 	var err := font_file.load_dynamic_font(font_path)
+	if err != OK or font_file == null:
+		return
 	var theme_override: Theme
-	if err == OK and font_file != null:
-		if theme != null:
-			theme_override = theme.duplicate() as Theme
-		else:
-			theme_override = Theme.new()
-		theme_override.default_font = font_file
-		theme_override.default_font_size = 14
-		theme = theme_override
+	if theme != null:
+		theme_override = theme.duplicate() as Theme
 	else:
-		if theme != null and theme.default_font == null:
-			theme = null
+		theme_override = Theme.new()
+	theme_override.default_font = font_file
+	theme_override.default_font_size = 14
+	theme = theme_override
 
 func _style_nav() -> void:
 	var sb := StyleBoxFlat.new()
@@ -239,6 +243,10 @@ func _update_nav_visuals() -> void:
 		gallery_btn.add_theme_color_override("font_color", Color("#A8A8B5"))
 
 func _update_layout() -> void:
+	if not is_instance_valid(phone_container) or not is_instance_valid(bg_rect):
+		return
+	if not is_inside_tree():
+		return
 	# Если включен ручной режим — не трогаем позиции, можно двигать в редакторе свободно
 	if manual_layout:
 		# Применяем ручной размер/смещение если заданы
