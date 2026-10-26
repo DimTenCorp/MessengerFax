@@ -5,19 +5,28 @@ extends Control
 @onready var hint: Label = $VBox/Hint
 
 func _ready() -> void:
-	GalleryManager.gallery_updated.connect(_refresh)
+	var gm = get_node_or_null("/root/GalleryManager")
+	if gm:
+		gm.gallery_updated.connect(_refresh)
 	_refresh()
 
 func _refresh() -> void:
 	for child in grid.get_children():
 		child.queue_free()
 
-	var unlocked := GalleryManager.get_unlocked_count()
-	var total := GalleryManager.get_total_count()
+	var gm = get_node_or_null("/root/GalleryManager")
+	var unlocked: int = 0
+	var total: int = 5
+	if gm:
+		unlocked = gm.get_unlocked_count()
+		total = gm.get_total_count()
 	subtitle.text = "%d / %d фото получено" % [unlocked, total]
 
-	for char_id in GalleryManager.photos.keys():
-		var data: Dictionary = GalleryManager.photos[char_id]
+	if gm == null:
+		return
+
+	for char_id in gm.photos.keys():
+		var data: Dictionary = gm.photos[char_id]
 		var item := _create_item(char_id, data)
 		grid.add_child(item)
 
@@ -69,7 +78,6 @@ func _create_item(char_id: String, data: Dictionary) -> Control:
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
 	bg.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	bg.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	# скругление через shader? пока без
 	wrap.add_child(bg)
 
 	var icon := Label.new()
@@ -78,9 +86,11 @@ func _create_item(char_id: String, data: Dictionary) -> Control:
 	icon.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	icon.add_theme_font_size_override("font_size", 32 if is_unlocked else 26)
 	if is_unlocked:
-		# если есть реальная текстура - покажем её, иначе иконку
 		var tex_path: String = data.get("texture_path", "")
-		var tex := GalleryManager.try_load_texture(tex_path)
+		var gm = get_node_or_null("/root/GalleryManager")
+		var tex: Texture2D = null
+		if gm:
+			tex = gm.try_load_texture(tex_path)
 		if tex:
 			var tr := TextureRect.new()
 			tr.texture = tex
@@ -127,6 +137,8 @@ func _create_item(char_id: String, data: Dictionary) -> Control:
 	return panel
 
 func _on_photo_clicked(char_id: String) -> void:
-	# позже откроем полноэкранный просмотр
-	var data: Dictionary = GalleryManager.photos.get(char_id, {})
+	var gm = get_node_or_null("/root/GalleryManager")
+	if gm == null:
+		return
+	var data: Dictionary = gm.photos.get(char_id, {})
 	print("Открыть фото: ", data.get("title", char_id))

@@ -18,9 +18,9 @@ boot_splash/bg_color=Color(0.0862745, 0.0862745, 0.113725, 1)
 
 [autoload]
 
-GameManager="*res://scripts/autoload/GameManager.gd"
-GalleryManager="*res://scripts/autoload/GalleryManager.gd"
 ChatData="*res://scripts/autoload/ChatData.gd"
+GalleryManager="*res://scripts/autoload/GalleryManager.gd"
+GameManager="*res://scripts/autoload/GameManager.gd"
 
 [display]
 

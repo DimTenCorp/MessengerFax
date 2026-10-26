@@ -1,3 +1,4 @@
+class_name ChatDataClass
 extends Node
 ## Хранилище данных о чатах. Плейсхолдеры - позже заменишь на реальные аватарки/имена.
 ## Каждый чат: { id, name, placeholder_initials, color, last_message, time, unread, is_online }
@@ -75,7 +76,7 @@ func get_chat_by_id(id: String) -> Dictionary:
 	return {}
 
 func get_total_unread() -> int:
-	var total := 0
+	var total: int = 0
 	for c in chats:
 		total += c["unread"]
 	return total

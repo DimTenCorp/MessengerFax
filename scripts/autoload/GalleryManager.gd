@@ -1,3 +1,4 @@
+class_name GalleryManagerClass
 extends Node
 ## Менеджер галереи. Хранит полученные фото.
 ## Позже сюда будут сохраняться реальные Texture2D от персонажей.
@@ -39,7 +40,7 @@ func unlock_photo(character_id: String) -> void:
 		gallery_updated.emit()
 
 func get_unlocked_count() -> int:
-	var c := 0
+	var c: int = 0
 	for v in photos.values():
 		if v["unlocked"]:
 			c += 1

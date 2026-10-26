@@ -19,9 +19,10 @@ func _ready() -> void:
 	_style_avatar()
 	back_btn.pressed.connect(_on_back)
 	send_btn.pressed.connect(_on_send_pressed)
-	# если открыли без id - берём из GameManager
 	if chat_id == "":
-		chat_id = GameManager.current_chat_id
+		var gm = get_node_or_null("/root/GameManager")
+		if gm:
+			chat_id = gm.current_chat_id
 	_load_chat(chat_id)
 
 func setup(id: String) -> void:
@@ -82,7 +83,10 @@ func _style_avatar() -> void:
 	avatar_panel.add_theme_stylebox_override("panel", sb)
 
 func _load_chat(id: String) -> void:
-	var data := ChatData.get_chat_by_id(id)
+	var cd = get_node_or_null("/root/ChatData")
+	if cd == null:
+		return
+	var data: Dictionary = cd.get_chat_by_id(id)
 	if data.is_empty():
 		name_label.text = "Чат"
 		status_label.text = "не в сети"
@@ -110,7 +114,6 @@ func _load_chat(id: String) -> void:
 		status_label.text = "была в сети недавно"
 		status_label.add_theme_color_override("font_color", Color("#7A7A8A"))
 
-	# демо-сообщения - плейсхолдеры
 	_clear_demo_messages()
 	_add_demo_bubbles(data)
 
@@ -120,7 +123,6 @@ func _clear_demo_messages() -> void:
 			child.queue_free()
 
 func _add_demo_bubbles(data: Dictionary) -> void:
-	# Входящее сообщение плейсхолдер
 	var bubble_in := _create_bubble(data.get("last_message", "Привет!"), false, data.get("color", Color("#7B61FF")))
 	messages_vbox.add_child(bubble_in)
 
@@ -189,7 +191,6 @@ func _create_bubble(text: String, is_outgoing: bool, accent: Color, is_typing_hi
 		spacer_right.custom_minimum_size = Vector2(8, 0)
 		container.add_child(spacer_right)
 
-	# анимация
 	container.modulate.a = 0.0
 	container.position.y += 6
 	var tween := create_tween()
@@ -199,16 +200,19 @@ func _create_bubble(text: String, is_outgoing: bool, accent: Color, is_typing_hi
 	return container
 
 func _on_back() -> void:
-	GameManager.go_back_to_chats()
+	var gm = get_node_or_null("/root/GameManager")
+	if gm:
+		gm.go_back_to_chats()
 
 func _on_send_pressed() -> void:
-	# заглушка пока
 	var txt := input_field.text.strip_edges()
 	if txt != "":
 		var bubble := _create_bubble(txt, true, Color.TRANSPARENT)
 		messages_vbox.add_child(bubble)
 		input_field.text = ""
 		await get_tree().create_timer(0.6).timeout
-		var chat_data := ChatData.get_chat_by_id(chat_id)
-		var reply := _create_bubble("Пока это заглушка, скоро тут будет живой диалог ✨", false, chat_data.get("color", Color("#7B61FF")))
-		messages_vbox.add_child(reply)
+		var cd = get_node_or_null("/root/ChatData")
+		if cd:
+			var chat_data: Dictionary = cd.get_chat_by_id(chat_id)
+			var reply := _create_bubble("Пока это заглушка, скоро тут будет живой диалог ✨", false, chat_data.get("color", Color("#7B61FF")))
+			messages_vbox.add_child(reply)

@@ -7,20 +7,34 @@ extends Control
 @onready var chats_btn: Button = $SafeArea/RootVBox/BottomNav/NavHBox/ChatsBtn
 @onready var gallery_btn: Button = $SafeArea/RootVBox/BottomNav/NavHBox/GalleryBtn
 
-var _active_screen: GameManager.Screen = GameManager.Screen.CHATS
+# Используем int для экрана чтобы не зависеть от порядка компиляции автозагрузок
+var _active_screen: int = 0 # 0=CHATS, 1=GALLERY, 2=CHAT_VIEW
 
 func _ready() -> void:
 	_style_nav()
 	_style_nav_buttons()
-	GameManager.screen_changed.connect(_on_screen_changed)
-	GalleryManager.gallery_updated.connect(_update_gallery_button)
-	ChatData.chat_updated.connect(_update_gallery_button)
+	# Подключаемся к автозагрузкам через глобальные имена (работает в рантайме)
+	var gm = get_node_or_null("/root/GameManager")
+	if gm:
+		gm.screen_changed.connect(_on_screen_changed)
+	var gal = get_node_or_null("/root/GalleryManager")
+	if gal:
+		gal.gallery_updated.connect(_update_gallery_button)
+	var cd = get_node_or_null("/root/ChatData")
+	if cd:
+		cd.chat_updated.connect(_update_gallery_button)
 
-	chats_btn.pressed.connect(func(): GameManager.go_to(GameManager.Screen.CHATS))
-	gallery_btn.pressed.connect(func(): GameManager.go_to(GameManager.Screen.GALLERY))
+	chats_btn.pressed.connect(func():
+		var gm2 = get_node_or_null("/root/GameManager")
+		if gm2: gm2.go_to(0)
+	)
+	gallery_btn.pressed.connect(func():
+		var gm2 = get_node_or_null("/root/GameManager")
+		if gm2: gm2.go_to(1)
+	)
 
 	_update_gallery_button()
-	_apply_screen(GameManager.Screen.CHATS)
+	_apply_screen(0)
 
 	# для веба - хэндлим кнопку назад браузера
 	if OS.has_feature("web"):
@@ -67,7 +81,7 @@ func _update_nav_visuals() -> void:
 	inactive_sb.content_margin_right = 12
 	inactive_sb.content_margin_bottom = 8
 
-	if _active_screen == GameManager.Screen.CHATS:
+	if _active_screen == 0: # CHATS
 		chats_btn.add_theme_stylebox_override("normal", active_sb)
 		chats_btn.add_theme_stylebox_override("hover", active_sb)
 		chats_btn.add_theme_stylebox_override("pressed", active_sb)
@@ -77,7 +91,7 @@ func _update_nav_visuals() -> void:
 		gallery_btn.add_theme_stylebox_override("hover", inactive_sb)
 		gallery_btn.add_theme_stylebox_override("pressed", inactive_sb)
 		gallery_btn.add_theme_color_override("font_color", Color("#A8A8B5"))
-	elif _active_screen == GameManager.Screen.GALLERY:
+	elif _active_screen == 1: # GALLERY
 		gallery_btn.add_theme_stylebox_override("normal", active_sb)
 		gallery_btn.add_theme_stylebox_override("hover", active_sb)
 		gallery_btn.add_theme_stylebox_override("pressed", active_sb)
@@ -88,7 +102,7 @@ func _update_nav_visuals() -> void:
 		chats_btn.add_theme_stylebox_override("pressed", inactive_sb)
 		chats_btn.add_theme_color_override("font_color", Color("#A8A8B5"))
 	else:
-		# в чате обе неактивны? делаем Чаты активным для ориентации
+		# в чате обе неактивны
 		chats_btn.add_theme_stylebox_override("normal", inactive_sb)
 		chats_btn.add_theme_stylebox_override("hover", inactive_sb)
 		chats_btn.add_theme_color_override("font_color", Color("#A8A8B5"))
@@ -97,22 +111,28 @@ func _update_nav_visuals() -> void:
 		gallery_btn.add_theme_color_override("font_color", Color("#A8A8B5"))
 
 func _update_gallery_button() -> void:
-	var unlocked := GalleryManager.get_unlocked_count()
-	var total := GalleryManager.get_total_count()
-	var unread := ChatData.get_total_unread()
+	var gallery_mgr = get_node_or_null("/root/GalleryManager")
+	var chat_data = get_node_or_null("/root/ChatData")
+	var unlocked: int = 0
+	var total: int = 5
+	var unread: int = 0
+	if gallery_mgr:
+		unlocked = gallery_mgr.get_unlocked_count()
+		total = gallery_mgr.get_total_count()
+	if chat_data:
+		unread = chat_data.get_total_unread()
 	gallery_btn.text = "🖼️ Галерея • %d/%d" % [unlocked, total]
-	if unread > 0 and _active_screen != GameManager.Screen.CHATS:
+	if unread > 0 and _active_screen != 0:
 		chats_btn.text = "💬 Чаты • %d" % unread
 	else:
 		chats_btn.text = "💬 Чаты"
-		# если есть непрочитанные - подсветим
-		if unread > 0 and _active_screen != GameManager.Screen.CHATS:
+		if unread > 0 and _active_screen != 0:
 			chats_btn.add_theme_color_override("font_color", Color("#FF6B8A"))
 
-func _on_screen_changed(new_screen: GameManager.Screen, payload: Variant) -> void:
+func _on_screen_changed(new_screen: int, payload: Variant) -> void:
 	_apply_screen(new_screen, payload)
 
-func _apply_screen(screen: GameManager.Screen, payload: Variant = null) -> void:
+func _apply_screen(screen: int, payload: Variant = null) -> void:
 	_active_screen = screen
 	chat_list.visible = false
 	gallery.visible = false
@@ -120,11 +140,11 @@ func _apply_screen(screen: GameManager.Screen, payload: Variant = null) -> void:
 	bottom_nav.visible = true
 
 	match screen:
-		GameManager.Screen.CHATS:
+		0: # CHATS
 			chat_list.visible = true
-		GameManager.Screen.GALLERY:
+		1: # GALLERY
 			gallery.visible = true
-		GameManager.Screen.CHAT_VIEW:
+		2: # CHAT_VIEW
 			chat_view.visible = true
 			bottom_nav.visible = false
 			if payload is String:
@@ -140,13 +160,16 @@ func _apply_screen(screen: GameManager.Screen, payload: Variant = null) -> void:
 	_update_gallery_button()
 
 	# уведомляем Яндекс Игры о смене экрана
-	if GameManager.is_yandex_env and JavaScriptBridge:
-		JavaScriptBridge.eval("if(window.ysdk) window.ysdk.features.LoadingAPI && window.ysdk.features.LoadingAPI.ready();", true)
+	var gm = get_node_or_null("/root/GameManager")
+	if gm and gm.is_yandex_env and OS.has_feature("web") and Engine.has_singleton("JavaScriptBridge"):
+		var js = Engine.get_singleton("JavaScriptBridge")
+		js.eval("if(window.ysdk) window.ysdk.features.LoadingAPI && window.ysdk.features.LoadingAPI.ready();", true)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_back") or (event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE):
-		if _active_screen == GameManager.Screen.CHAT_VIEW:
-			GameManager.go_back_to_chats()
+		if _active_screen == 2:
+			var gm = get_node_or_null("/root/GameManager")
+			if gm: gm.go_back_to_chats()
 			get_viewport().set_input_as_handled()
 
 func _setup_web_back() -> void:
