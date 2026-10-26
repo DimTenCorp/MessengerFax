@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://dx7k9l2m4n5p6"]
 [ext_resource type="Script" path="res://scenes/main_menu/ChatList.gd" id="1"]
-[ext_resource type="PackedScene" uid="uid://bq8k2d9f3p1h7" path="res://scenes/components/ChatItem.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://c1x8a2b7h1h8o" path="res://scenes/components/ChatItem.tscn" id="2"]
 
 [node name="ChatList" type="Control"]
 layout_mode=3
