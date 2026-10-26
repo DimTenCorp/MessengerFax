@@ -1,8 +1,6 @@
 extends Control
 
 @onready var header_panel: Panel = $MainVBox/Header
-@onready var search_bar: Panel = $MainVBox/Header/HeaderMargin/VBox/SearchBar
-@onready var search_input: LineEdit = $MainVBox/Header/HeaderMargin/VBox/SearchBar/SearchMargin/HBox/SearchInput
 @onready var chats_vbox: VBoxContainer = $MainVBox/Scroll/ChatsVBox
 @onready var scroll: ScrollContainer = $MainVBox/Scroll
 @onready var online_label: Label = $MainVBox/Header/HeaderMargin/VBox/Subtitle/OnlineLabel
@@ -14,10 +12,8 @@ var _chat_items: Array = []
 
 func _ready() -> void:
 	_style_header()
-	_style_search_bar()
 	_style_unread_badge()
 	_style_hint()
-	search_input.text_changed.connect(_on_search_changed)
 	var cd = get_node_or_null("/root/ChatData")
 	if cd:
 		_populate_chats(cd.chats)
@@ -40,15 +36,6 @@ func _style_header() -> void:
 	sb.content_margin_right = 0
 	sb.content_margin_bottom = 0
 	header_panel.add_theme_stylebox_override("panel", sb)
-
-func _style_search_bar() -> void:
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color("#2A2A33")
-	sb.corner_radius_top_left = 12
-	sb.corner_radius_top_right = 12
-	sb.corner_radius_bottom_right = 12
-	sb.corner_radius_bottom_left = 12
-	search_bar.add_theme_stylebox_override("panel", sb)
 
 func _style_unread_badge() -> void:
 	var sb := StyleBoxFlat.new()
@@ -88,20 +75,6 @@ func _on_chat_pressed(chat_id: String) -> void:
 		gm.go_to(2, chat_id) # 2 = CHAT_VIEW
 	if cd:
 		cd.mark_as_read(chat_id)
-
-func _on_search_changed(new_text: String) -> void:
-	var cd = get_node_or_null("/root/ChatData")
-	if cd == null:
-		return
-	var query := new_text.strip_edges().to_lower()
-	if query == "":
-		_populate_chats(cd.chats)
-		return
-	var filtered: Array[Dictionary] = []
-	for c in cd.chats:
-		if c["name"].to_lower().contains(query) or c["last_message"].to_lower().contains(query):
-			filtered.append(c)
-	_populate_chats(filtered)
 
 func _update_header_stats() -> void:
 	var cd = get_node_or_null("/root/ChatData")

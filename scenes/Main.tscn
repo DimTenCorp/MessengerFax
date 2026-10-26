@@ -23,32 +23,49 @@ anchor_right=1.0
 anchor_bottom=1.0
 grow_horizontal=2
 grow_vertical=2
-color=Color(0.0862745, 0.0862745, 0.113725, 1)
+color=Color(0.0470588, 0.0470588, 0.0627451, 1)
 
-[node name="SafeArea" type="MarginContainer" parent="."]
+[node name="BgGradient" type="ColorRect" parent="."]
 layout_mode=1
 anchors_preset=15
 anchor_right=1.0
 anchor_bottom=1.0
 grow_horizontal=2
 grow_vertical=2
-theme_override_constants/margin_left=0
-theme_override_constants/margin_top=0
-theme_override_constants/margin_right=0
-theme_override_constants/margin_bottom=0
+color=Color(0.0862745, 0.0588235, 0.117647, 0.07)
+visible=false
 
-[node name="RootVBox" type="VBoxContainer" parent="SafeArea"]
-layout_mode=2
-size_flags_horizontal=3
-size_flags_vertical=3
+[node name="AdaptiveRoot" type="Control" parent="."]
+layout_mode=1
+anchors_preset=15
+anchor_right=1.0
+anchor_bottom=1.0
+grow_horizontal=2
+grow_vertical=2
+
+[node name="PhoneContainer" type="Panel" parent="AdaptiveRoot"]
+layout_mode=1
+anchors_preset=15
+anchor_right=1.0
+anchor_bottom=1.0
+grow_horizontal=2
+grow_vertical=2
+
+[node name="PhoneVBox" type="VBoxContainer" parent="AdaptiveRoot/PhoneContainer"]
+layout_mode=1
+anchors_preset=15
+anchor_right=1.0
+anchor_bottom=1.0
+grow_horizontal=2
+grow_vertical=2
 alignment=0
 
-[node name="Content" type="Control" parent="SafeArea/RootVBox"]
+[node name="Content" type="Control" parent="AdaptiveRoot/PhoneContainer/PhoneVBox"]
 layout_mode=2
 size_flags_horizontal=3
 size_flags_vertical=3
 
-[node name="ChatList" parent="SafeArea/RootVBox/Content" instance=ExtResource("1")]
+[node name="ChatList" parent="AdaptiveRoot/PhoneContainer/PhoneVBox/Content" instance=ExtResource("1")]
 layout_mode=1
 anchors_preset=15
 anchor_right=1.0
@@ -56,7 +73,7 @@ anchor_bottom=1.0
 grow_horizontal=2
 grow_vertical=2
 
-[node name="Gallery" parent="SafeArea/RootVBox/Content" instance=ExtResource("2")]
+[node name="Gallery" parent="AdaptiveRoot/PhoneContainer/PhoneVBox/Content" instance=ExtResource("2")]
 visible=false
 layout_mode=1
 anchors_preset=15
@@ -65,7 +82,7 @@ anchor_bottom=1.0
 grow_horizontal=2
 grow_vertical=2
 
-[node name="ChatView" parent="SafeArea/RootVBox/Content" instance=ExtResource("3")]
+[node name="ChatView" parent="AdaptiveRoot/PhoneContainer/PhoneVBox/Content" instance=ExtResource("3")]
 visible=false
 layout_mode=1
 anchors_preset=15
@@ -74,13 +91,13 @@ anchor_bottom=1.0
 grow_horizontal=2
 grow_vertical=2
 
-[node name="BottomNav" type="Panel" parent="SafeArea/RootVBox"]
+[node name="BottomNav" type="Panel" parent="AdaptiveRoot/PhoneContainer/PhoneVBox"]
 custom_minimum_size=Vector2(0, 64)
 layout_mode=2
 size_flags_horizontal=3
 size_flags_vertical=0
 
-[node name="NavHBox" type="HBoxContainer" parent="SafeArea/RootVBox/BottomNav"]
+[node name="NavHBox" type="HBoxContainer" parent="AdaptiveRoot/PhoneContainer/PhoneVBox/BottomNav"]
 layout_mode=1
 anchors_preset=15
 anchor_right=1.0
@@ -90,14 +107,14 @@ grow_vertical=2
 alignment=1
 theme_override_constants/separation=12
 
-[node name="ChatsBtn" type="Button" parent="SafeArea/RootVBox/BottomNav/NavHBox"]
+[node name="ChatsBtn" type="Button" parent="AdaptiveRoot/PhoneContainer/PhoneVBox/BottomNav/NavHBox"]
 custom_minimum_size=Vector2(0, 48)
 layout_mode=2
 size_flags_horizontal=3
 size_flags_vertical=4
 text="💬 Чаты"
 
-[node name="GalleryBtn" type="Button" parent="SafeArea/RootVBox/BottomNav/NavHBox"]
+[node name="GalleryBtn" type="Button" parent="AdaptiveRoot/PhoneContainer/PhoneVBox/BottomNav/NavHBox"]
 custom_minimum_size=Vector2(0, 48)
 layout_mode=2
 size_flags_horizontal=3

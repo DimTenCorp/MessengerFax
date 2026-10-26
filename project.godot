@@ -16,6 +16,10 @@ config/icon="res://icon.svg"
 run/main_scene="res://scenes/Main.tscn"
 boot_splash/bg_color=Color(0.0862745, 0.0862745, 0.113725, 1)
 
+[gui]
+
+theme/custom="res://assets/fonts/ThemeWithFont.tres"
+
 [autoload]
 
 ChatData="*res://scripts/autoload/ChatData.gd"
@@ -28,8 +32,9 @@ window/name="Messenger Fax"
 window/size/viewport_width=432
 window/size/viewport_height=960
 window/size/resizable=true
+window/size/initial_position_type=2
 window/stretch/mode="canvas_items"
-window/stretch/aspect="keep_width"
+window/stretch/aspect="expand"
 window/stretch/scale=1.0
 window/stretch/scale_mode="fractional"
 window/handheld/orientation=1

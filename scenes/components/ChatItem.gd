@@ -28,7 +28,16 @@ func _ready() -> void:
 	_setup_badge()
 
 func _setup_styles() -> void:
-	_base_style = get_theme_stylebox("panel").duplicate() as StyleBoxFlat
+	# Безопасное получение стиля - чтобы не было null при expand/resize и кастом темах
+	var base := get_theme_stylebox("panel")
+	if base == null:
+		base = StyleBoxFlat.new()
+		base.bg_color = Color("#1E1E24")
+		base.corner_radius_top_left = 16
+		base.corner_radius_top_right = 16
+		base.corner_radius_bottom_right = 16
+		base.corner_radius_bottom_left = 16
+	_base_style = base.duplicate() as StyleBoxFlat
 	_hover_style = _base_style.duplicate() as StyleBoxFlat
 	_hover_style.bg_color = Color("#22222A")
 	_pressed_style = _base_style.duplicate() as StyleBoxFlat

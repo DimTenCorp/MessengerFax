@@ -9,6 +9,9 @@ func _ready() -> void:
 	if gm:
 		gm.gallery_updated.connect(_refresh)
 	_refresh()
+	# Адаптив колонок
+	get_viewport().size_changed.connect(_update_columns)
+	_update_columns()
 
 func _refresh() -> void:
 	for child in grid.get_children():
@@ -36,6 +39,7 @@ func _refresh() -> void:
 	# паддинг через контейнер
 	var scroll := $VBox/Scroll
 	scroll.add_theme_constant_override("scrollbar_margin_left", 0)
+	_update_columns()
 
 func _create_item(char_id: String, data: Dictionary) -> Control:
 	var panel := PanelContainer.new()
@@ -135,6 +139,22 @@ func _create_item(char_id: String, data: Dictionary) -> Control:
 	tween.tween_property(panel, "modulate:a", 1.0, 0.2)
 
 	return panel
+
+func _update_columns() -> void:
+	var vp_w: float = get_viewport_rect().size.x
+	if DisplayServer.window_get_size().x > 0:
+		vp_w = float(DisplayServer.window_get_size().x)
+	# Определяем ширину телефона (совпадает с логикой Main)
+	var phone_w: float = vp_w
+	if vp_w >= 700:
+		phone_w = minf(vp_w * 0.95, 560)
+	if is_instance_valid(grid):
+		if phone_w >= 520:
+			grid.columns = 3
+		elif phone_w >= 360:
+			grid.columns = 2
+		else:
+			grid.columns = 2
 
 func _on_photo_clicked(char_id: String) -> void:
 	var gm = get_node_or_null("/root/GalleryManager")
