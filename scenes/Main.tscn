@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://zv5w7x9y1a2b4" path="res://scenes/chat/ChatView.tscn" id="3"]
 [ext_resource type="Script" path="res://scenes/Main.gd" id="4"]
 
-[node name="Main" type="Control" parent="."]
+[node name="Main" type="Control"]
 layout_mode=3
 anchors_preset=15
 anchor_right=1.0
